@@ -7,7 +7,6 @@
 // Comando para migrar para o banco de dados
 // npx prisma migrate dev --name init
 
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -18,8 +17,14 @@ datasource db {
 }
 
 model User {
-  id Int @id @default(autoincrement())
-  nome String
-  email String @unique
+  id             Int       @id @default(autoincrement())
+  nome           String
+  sobrenome      String
+  email          String    @unique
+  senha          String
+  dataNascimento DateTime?
+  dataCadastro   DateTime  @default(now())
+  ativo          Boolean   @default(true)
+  cpf            String?   @unique
+  telefone       String?
 }
-
