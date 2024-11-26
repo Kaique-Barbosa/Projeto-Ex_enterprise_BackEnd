@@ -28,9 +28,9 @@ usuario.post('/login', async (req, res) => {
       senha: senha
     }
   });
-
-   const token = gerarToken(usuario.id)
-
+  
+   const token = gerarToken({usuario: usuario.id, email: usuario.email, senha: usuario.senha})
+   
    res.status(200).json({usuario, token: token })
 
  } catch (error) {
@@ -49,7 +49,7 @@ usuario.post("/cadastrar", async (req, res) => {
     }
     const senhaEncripty = await bycripy.hash(senha, 10);
 
-    const user = await prisma.user.create({
+    const usuario = await prisma.user.create({
       data: {
         nome,
         sobrenome,
@@ -59,7 +59,7 @@ usuario.post("/cadastrar", async (req, res) => {
       },
     });
 
-    const token = gerarToken(user.id);
+    const token = gerarToken({usuario: usuario.id, email: usuario.email, senha: usuario.senha})
 
     res.status(200).json({ message: "Usuario Criado com sucesso", token: token });
   } catch (error) {
@@ -88,8 +88,12 @@ usuario.put("/:id", async (req, res) => {
   
     // na resposta abaixo já esta retornando o valor do usuario atualizado para que 
     //não seja preciso fazer um novo fetch para atualização
-  
-    res.status(201).json({message: "Produto Atualizado com sucesso", usuario: usuarioAtualizado})
+    verificarToken({usuario: usuario.id, email: usuario.email, senha: usuario.senha})
+    
+    if(verificarToken){
+      res.status(201).json({message: "Produto Atualizado com sucesso", usuario: usuarioAtualizado})
+    }
+
   } catch (error) {
     res.status(500).json({ error: "Erro ao atualizar usuario" });
   }

@@ -3,11 +3,11 @@ const jwt = require('jsonwebtoken');
 // Geração do token
 /// OBS ESSE TOKEN USA PAR AO PAYLOAD SOMENTE O ID< CASO QUEIRA PASSAR MAIS PARAMETROS DEVERÀ MUDAR
 
-const gerarToken = (userId) => {
+const gerarToken = (user) => {
     if (!process.env.JWT_SECRETO) {
         throw new Error('Chave secreta JWT não definida em process.env.JWT_SECRETO');
     }
-    return jwt.sign({ id: userId }, process.env.JWT_SECRETO, { expiresIn: '5m' });
+    return jwt.sign(user, process.env.JWT_SECRETO, { expiresIn: '5m' });
 };
 
 // Verificação do token
