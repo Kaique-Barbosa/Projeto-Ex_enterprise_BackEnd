@@ -8,7 +8,9 @@ const usuario = express.Router();
 
 
 // rota para listar todos os usuarios
-usuario.get("/", verificarRota, async (req, res) => {
+usuario.get("/", verificarRota, async (req, res) => { 
+  // avaliar a utilização desse verificar rota, 
+  // pois agr o token é armazanado em cookie
   try {
     const usuarios = await prisma.user.findMany();
     res.status(200).json(usuarios);
@@ -28,10 +30,12 @@ usuario.post('/login', async (req, res) => {
       senha: senha
     }
   });
-  
-   const token = gerarToken({usuario: usuario.id, email: usuario.email, senha: usuario.senha})
+
+  const dados = {usuario: usuario.id, email: usuario.email, senha: usuario.senha}
+ 
+   const token = gerarToken(dados, res)
    
-   res.status(200).json({usuario, token: token })
+   res.status(200).json({message: "Usuario encontrado", token: token })
 
  } catch (error) {
   res.status(401).json({"message": "Erro Usuario não encontrado" })
@@ -59,7 +63,8 @@ usuario.post("/cadastrar", async (req, res) => {
       },
     });
 
-    const token = gerarToken({usuario: usuario.id, email: usuario.email, senha: usuario.senha})
+    const dados = {usuario: usuario.id, email: usuario.email, senha: usuario.senha}
+    const token = gerarToken(dados, res)
 
     res.status(200).json({ message: "Usuario Criado com sucesso", token: token });
   } catch (error) {
@@ -69,10 +74,16 @@ usuario.post("/cadastrar", async (req, res) => {
 });
 
 usuario.put("/:id", async (req, res) => {
+  const token = req.cookies.token // pegando o token dos cookies
+
+  if (!token) {
+    return res.status(401).json({ error: 'Não autorizado' });
+  }
+
   try {
     const { id } = req.params;
     const { nome, sobrenome, email, telefone, senha } = req.body;
-   
+
     const usuarioAtualizado = await prisma.user.update({
       where: {
         id: parseInt(id),
@@ -85,30 +96,49 @@ usuario.put("/:id", async (req, res) => {
         senha,
       },
     });
-  
+    console.log(usuarioAtualizado)
     // na resposta abaixo já esta retornando o valor do usuario atualizado para que 
     //não seja preciso fazer um novo fetch para atualização
-    verificarToken({usuario: usuario.id, email: usuario.email, senha: usuario.senha})
+
     
+    const dados = verificarToken(token)
+   
     if(verificarToken){
-      res.status(201).json({message: "Produto Atualizado com sucesso", usuario: usuarioAtualizado})
+      res.status(201).json({message: "Usuario atualizado com sucesso"})
     }
 
   } catch (error) {
-    res.status(500).json({ error: "Erro ao atualizar usuario" });
+    res.status(500).json({ error: "Erro ao atualizar usuario", message: "Erro ao atualizar usuario" });
   }
  
 });
 
 usuario.delete("/:id", async (req, res) => {
-  try {
-    const { id } = req.params;
+  const token = req.cookies.token // pegando o token dos cookies
 
-    await prisma.user.delete({
-      where:{
-        id: parseInt(id)
-      },
-    })
+  if (!token) {
+    return res.status(401).json({ error: 'Não autorizado' });
+  }
+  
+  try {
+    const dados = verificarToken(token)
+
+    const { id } = req.params;
+    
+    if(dados){
+      await prisma.user.delete({
+        where:{
+          id: parseInt(id)
+        },
+      })
+    }
+
+     // Limpar o cookie do JWT
+     res.clearCookie("token", {
+      httpOnly: true,
+      secure: false,
+    });
+
     res.status(200).json({ message: "Usuario deletado com sucesso" });
   } catch (error) {
     res.status(500).json({ error: "Erro ao deletar usuario" });
