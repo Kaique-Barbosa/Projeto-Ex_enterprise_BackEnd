@@ -27,11 +27,10 @@ usuario.post('/login', async (req, res) => {
       email: email,
       senha: senha
     }
-   
   });
 
    const token = gerarToken(usuario.id)
-   
+
    res.status(200).json({usuario, token: token })
 
  } catch (error) {
