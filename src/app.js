@@ -12,7 +12,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // Middleware para parsing de cookies
-app.use(cookieParser());
+app.use(cookieParser()); // necessario para manipular os tokens, foi instalado
 
 
 //Inportação do Fluxo de rotas:

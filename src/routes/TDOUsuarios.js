@@ -55,7 +55,7 @@ usuario.post("/login", async (req, res) => {
 
     return res
       .status(200)
-      .json({ status: "ok", message: "Usuario encontrado", token: token });
+      .json({ status: "ok", message: "Usuario encontrado", token: token});
   } catch (error) {
     console.log("Erro: ", error);
     res.status(500).json({ message: "Erro ao fazer login" });
