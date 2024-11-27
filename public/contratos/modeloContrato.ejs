@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contrato de Locação</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: #fff;
+            border: 1px solid #d3d3d3;
+            border-radius: 8px;
+            padding: 20px;
+            width: 85%; /* Reduzi o tamanho para ajustar melhor o layout */
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+            line-height: 1.6;
+        }
+        h1, h2, h3, h4, h5, h6 {
+            text-align: center;
+            color: #333;
+            margin: 10px 0;
+        }
+        p {
+            text-align: justify; /* Textos justificados */
+            margin: 10px 0;
+        }
+        .signature {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+        }
+        .signature div {
+            width: 45%;
+            text-align: center;
+            border-top: 1px solid #000;
+            padding-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>CONTRATO DE LOCAÇÃO DE IMÓVEL RESIDENCIAL</h1>
+        <p><b>LOCADOR (A):</b> <%= nomeLocador %>, estado civil <%= estadoCivilLocador %>, profissão <%= profissaoLocador %>, RG n° <%= rgLocador %>, CPF <%= cpfLocador %>, residente e domiciliado (a) em <%= locadouroLocador %>, n° <%= logradouroNumeroLocador %>, Bairro <%= bairroLocador %>, Cidade <%= cidadeLocador %>, CEP <%= cepLocador %>.</p>
+        <p><b>LOCATÁRIO (A):</b> ___________________________, estado civil ________________, profissão ________, RG n° _____________, CPF ________________________________, residente e domiciliado (a) no endereço do imóvel objeto do presente contrato.</p>
+        <p>As partes acima mencionadas, pelo presente contrato particular, ajustam a locação de um imóvel residencial, de acordo com as cláusulas que seguem.</p>
+        <p><b>CLÁUSULA PRIMEIRA:</b> O objeto de locação é o imóvel residencial, localizado em ____________________________, n° _______, complemento ________, cidade ________, CEP ____________.</p>
+        <p><b>CLÁUSULA SEGUNDA:</b> O prazo da locação é de __________ <b>meses</b>, tendo início na data da assinatura do presente contrato, ocasião em que é entregue as chaves do imóvel ao (à) LOCATÁRIO (A).</p>
+        <p><b>PARÁGRAFO PRIMEIRO:</b> Se o (a) LOCATÁRIO (A) desocupar o imóvel antes do prazo estipulado na Cláusula Segunda, ficará obrigado a pagar, a título de multa, o valor equivalente a _____ (_______________) mês de aluguel.</p>
+        <p><b>CLÁUSULA TERCEIRA:</b> No dia subsequente ao término do prazo estipulado na Cláusula Segunda, o (a) LOCATÁRIO (A) deverá restituir o imóvel sob pena de multa equivalente a _____ (_______________) mês de aluguel.</p>
+        <p><b>CLÁUSULA QUARTA:</b> O valor do aluguel mensal será de R$ _____________________ (_____________________________________________________________________), que deverá ser pago até o dia __________ <b>de cada mês</b>.</p>
+        <div class="signature">
+            <div>
+                <b>Locador (a)</b>
+            </div>
+            <div>
+                <b>Locatário (a)</b>
+            </div>
+        </div>
+        <div class="signature">
+            <div>
+                <b>Testemunha 1</b>
+            </div>
+            <div>
+                <b>Testemunha 2</b>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
