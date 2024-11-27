@@ -11,5 +11,9 @@
   },
   "devDependencies": {
     "prisma": "^5.22.0"
-  }
+  },
+
+"scripts": {
+  "start": "nodemon server.js"
+}
 }

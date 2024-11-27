@@ -24,6 +24,8 @@ usuario.get("/", verificarRota, async (req, res) => {
 usuario.post('/login', async (req, res) => {
  try {
    const {email, senha} = req.body
+   const descriptySenha = await bycripy.compare();
+
    const usuario = await prisma.user.findUnique({
     where:{
       email: email,
