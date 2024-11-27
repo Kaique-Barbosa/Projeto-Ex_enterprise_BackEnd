@@ -8,9 +8,10 @@ validarToken.get('/', function (req, res) {
     try {
         const token = req.cookies.token
         verificarToken(token)
-        res.status(200).json("Token valido")
+        res.status(200).json(true)
     } catch (error) {
-        res.status(400).json("Token Invalido ou expirado")
+        console.log(error);
+        res.status(400).json(false)
     }
 
 })
