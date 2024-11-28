@@ -1,8 +1,10 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; font-src 'self' https://use.typekit.net;">
     <title>Contrato de Locação</title>
     <style>
         body {
@@ -15,29 +17,41 @@
             min-height: 100vh;
             background-color: #f5f5f5;
         }
+
         .container {
             background: #fff;
-            border: 1px solid #d3d3d3;
+            border: 1px solid #ddd;
             border-radius: 8px;
             padding: 20px;
-            width: 85%; /* Reduzi o tamanho para ajustar melhor o layout */
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+            width: 80%;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             line-height: 1.6;
+           
         }
-        h1, h2, h3, h4, h5, h6 {
+        #titulo{
             text-align: center;
-            color: #333;
-            margin: 10px 0;
         }
+
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6 {
+            text-align: center;
+        }
+
         p {
-            text-align: justify; /* Textos justificados */
-            margin: 10px 0;
+            text-align: justify;
+            margin-bottom: 1em;
         }
+
         .signature {
             display: flex;
             justify-content: space-between;
-            margin-top: 30px;
+            margin-top: 40px;
         }
+
         .signature div {
             width: 45%;
             text-align: center;
@@ -46,17 +60,59 @@
         }
     </style>
 </head>
+
 <body>
     <div class="container">
-        <h1>CONTRATO DE LOCAÇÃO DE IMÓVEL RESIDENCIAL</h1>
-        <p><b>LOCADOR (A):</b> <%= nomeLocador %>, estado civil <%= estadoCivilLocador %>, profissão <%= profissaoLocador %>, RG n° <%= rgLocador %>, CPF <%= cpfLocador %>, residente e domiciliado (a) em <%= locadouroLocador %>, n° <%= logradouroNumeroLocador %>, Bairro <%= bairroLocador %>, Cidade <%= cidadeLocador %>, CEP <%= cepLocador %>.</p>
-        <p><b>LOCATÁRIO (A):</b> ___________________________, estado civil ________________, profissão ________, RG n° _____________, CPF ________________________________, residente e domiciliado (a) no endereço do imóvel objeto do presente contrato.</p>
-        <p>As partes acima mencionadas, pelo presente contrato particular, ajustam a locação de um imóvel residencial, de acordo com as cláusulas que seguem.</p>
-        <p><b>CLÁUSULA PRIMEIRA:</b> O objeto de locação é o imóvel residencial, localizado em ____________________________, n° _______, complemento ________, cidade ________, CEP ____________.</p>
-        <p><b>CLÁUSULA SEGUNDA:</b> O prazo da locação é de __________ <b>meses</b>, tendo início na data da assinatura do presente contrato, ocasião em que é entregue as chaves do imóvel ao (à) LOCATÁRIO (A).</p>
-        <p><b>PARÁGRAFO PRIMEIRO:</b> Se o (a) LOCATÁRIO (A) desocupar o imóvel antes do prazo estipulado na Cláusula Segunda, ficará obrigado a pagar, a título de multa, o valor equivalente a _____ (_______________) mês de aluguel.</p>
-        <p><b>CLÁUSULA TERCEIRA:</b> No dia subsequente ao término do prazo estipulado na Cláusula Segunda, o (a) LOCATÁRIO (A) deverá restituir o imóvel sob pena de multa equivalente a _____ (_______________) mês de aluguel.</p>
-        <p><b>CLÁUSULA QUARTA:</b> O valor do aluguel mensal será de R$ _____________________ (_____________________________________________________________________), que deverá ser pago até o dia __________ <b>de cada mês</b>.</p>
+        <h1 id="titulo">CONTRATO DE LOCAÇÃO DE IMÓVEL RESIDENCIAL</h1>
+        <p><b>LOCADOR (A):</b>
+            <%= nomeLocador %> estado civil <%= estadoCivilLocador %>, profissão <%= profissaoLocador %>, RG n° <%= rgLocador %> e CPF <%= cpfLocador %>, residente e domiciliada <%= locadouroLocador %> n° <%= logradouroNumeroLocador %>, Bairro <%= bairroLocador %>, Cidade <%= cidadeLocador %>, CEP <%= cepLocador %>.
+        </p>
+        <p><b>LOCATÁRIO (A):</b> <%= nomeLocatario %> estado civil <%= estadoCivilLocatario %>, profissão <%= profissaoLocatario %>, RG n° <%= rgLocatario %>  e CPF <%= cpfLocatario %> , residente e
+            domiciliado (a) no endereço do imóvel objeto do presente contrato.</p>
+        <p>As partes acima mencionadas, pelo presente contrato particular, ajustam a locação de um imóvel residencial,
+            de acordo com as cláusulas que seguem.</p>
+        <p><b>CLÁUSULA PRIMEIRA:</b> O objeto de locação é o imóvel residencial, localizado na <%= logradouroImovel %>, n° <%= numeroImovel %>,
+            complemento <%= complementoImovel %> cidade <%= cidadeImovel %>, CEP <%= cepImovel %>.</p>
+        <p><b>CLÁUSULA SEGUNDA:</b> O prazo da locação é de <%= prazoLocacao %> <b>meses</b>, tendo início na data da assinatura do
+            presente contrato, ocasião em que é entregue as chaves do imóvel ao (à) LOCATÁRIO (A).</p>
+        <p><b>PARÁGRAFO PRIMEIRO:</b> Se o (a) LOCATÁRIO (A) desocupar o imóvel antes do prazo estipulado na Cláusula
+            Segunda, ficará obrigado a pagar, a título de multa, o valor equivalente a R$ <%= valorMulta %> (<%= valorMultaExtenso %>) mês de aluguel,
+            podendo ser isentado a critério do (a) LOCADOR (A) quando da desocupação, mediante termo aditivo expresso e
+            formal.</p>
+        <p><b>CLÁUSULA TERCEIRA:</b> No dia subsequente ao término do prazo estipulado na Cláusula Segunda, o (à)
+            LOCATÁRIO (A), independentemente de aviso, notificação ou interpelação judicial ou extrajudicial, deverá
+            restituir o imóvel sob pena não o fazendo, ficar sujeito ao pagamento de multa equivalente a R$ <%= valorMulta %> (<%= valorMultaExtenso %>) mês
+            de aluguel, <b>SALVO,</b> se em comum acordo, o presente contrato de locação for prorrogado, ocasião em que
+            deverá ser elaborado obrigatoriamente termo aditivo de locação estipulando novo prazo e com reajuste do
+            preço do aluguel.</p>
+        <p><b>CLÁUSULA QUARTA:</b> O valor do aluguel mensal será de R$ <%= valorLocacao %> (<% valorLocacaoExtenso %>),
+            que deverá ser pago obrigatoriamente até <b>o dia</b> <%= diaPagamentoLocacao %> <b>de cada mês</b>, em moeda corrente e em mãos
+            do (à) LOCADOR (A).</p>
+        <p><b>PARÁGRAFO PRIMEIRO:</b> Em caso de atraso no pagamento do aluguel no prazo estipulado na Cláusula Quarta,
+            será aplicada automaticamente multa de <%= porcentagemMulta %> % ( <%= porcentagemMultaExtenso %> por cento) sobre o valor do aluguel, juros de mora de <%= jurosMora %>
+            % (<%= jurosMoraExtenso %> por cento) e correção pelo INPC do montante devido.</p>
+        <p><b>PARÁGRAFO SEGUNDO:</b> O (A) LOCATÁRIO (A) não poderá reter o pagamento do aluguel mensal ou outros
+            encargos, sob a alegação de não atendimento de suas eventuais exigências.</p>
+        <p><b>CLÁUSULA QUINTA:</b> O atraso no pagamento do aluguel, bem como das despesas ordinárias que incidam sobre
+            o imóvel por mais de <%= limiteDiasAtrasoPagamento %> dias, serão causa de rescisão do contrato de locação, ficando (a) LOCATÁRIO (A)
+            sujeito a multa equivalente a <%= valorLocacao %> (<%= valorLocacaoExtenso %>) mês de aluguel, mais os valores devidos até então.</p>
+        <p><b>CLÁUSULA SEXTA:</b> Em caso de atraso no pagamento do aluguel será realizada a cobrança por meio de
+            escritório de advocacia, e ficará o (a) LOCATÁRIO (A) sujeito ao pagamento dos honorários advocatícios no
+            valor de 20% (vinte por cento) sobre o valor do débito atualizado, independentemente das multas e demais
+            cominações legais.</p>
+        <p><b>PARÁGRAFO PRIMEIRO:</b> Os honorários advocatícios de 20% descritos na Cláusula Sexta, se aplicam para
+            qualquer outra medida judicial ou extrajudicial adotada em desfavor do (da) LOCATÁRIO (A).</p>
+        <p><b>CLÁUSULA SÉTIMA:</b> Será de responsabilidade do (a) LOCATÁRIO (A), além do pagamento do aluguel, os
+            pagamentos de IPTU, condomínio, água, luz, seguro contra incêndio e todas as demais despesas referentes à
+            conservação do imóvel e eventuais taxas ou tributos que incidam sobre ele.</p>
+        <p><b>PARÁGRAFO PRIMEIRO:</b> Os prazos e as obrigações do (a) LOCATÁRIO (A) se vencerão independentemente de
+            interpelação, notificação ou aviso, judicial ou extrajudicial.</p>
+        <p><b>PARÁGRAFO SEGUNDO:</b> O (A) LOCATÁRIO (A) se obriga a tomar as providências cabíveis junto às
+            concessionárias de serviços públicos, dentro de <%= prazoServicos %> dias contados da assinatura do presente contrato, a fim
+            de transferir para o seu nome as contas de consumo de água e esgoto, luz, gás e <%= servicos %>, sob pena de
+            incorrer em infração contratual, respondendo, ademais, por estas contas durante a locação, ainda que
+            lançadas em nome de terceiros, bem como, de eventuais indenizações por dano moral ou material que der causa.
+        </p>
         <div class="signature">
             <div>
                 <b>Locador (a)</b>
@@ -75,4 +131,5 @@
         </div>
     </div>
 </body>
+
 </html>

@@ -20,8 +20,12 @@ usuario.get("/", verificarRota, async (req, res) => {
 
 // rota para login
 
-usuario.post("/login", async (req, res) => {
+usuario.post("/login", verificarRota, async (req, res) => {
   try {
+    if(req.tokenVerificado){
+      return res.status(400).json({ status: "failed", message: "Usuário já está logado"})
+    }
+
     const { email, senha } = req.body;
 
     const usuario = await prisma.user.findUnique({

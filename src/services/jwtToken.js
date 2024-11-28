@@ -5,7 +5,7 @@ const gerarToken = (user, res) => {
   if (!process.env.JWT_SECRETO) {
     throw new Error('Chave secreta JWT não definida em process.env.JWT_SECRETO');
   }
-
+  // lembrar de mudar o tempo de expiração dos tokens itualmente, tanto na geração quanto no coockies
   const token = jwt.sign(user, process.env.JWT_SECRETO, { expiresIn: '5m' });
 
   // Salvar o token no cookie

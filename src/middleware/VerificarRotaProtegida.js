@@ -1,37 +1,26 @@
-
-const { gerarToken, verificarToken } = require("../services/jwtToken");
-
-// script para verificar validação jwt para a rota passada
+const { verificarToken } = require("../services/jwtToken");
 
 const verificar = (req, res, next) => {
-    const token = req.headers.authorization?.split(' ')[1]; // Pegando o token do header Authorization
-    if(!token){
-        return res.status(401).json({ message: 'Token não fornecido' });
-    }
-    verificarToken(token)
+  // Pegando o token do cookie "authToken"
+  const token = req.cookies.token;
 
-   
+  // if (!token) {
+  //     return res.status(401).json({ message: "Token não fornecido" });
+  // }
 
-    next()
-}
+  if (token) {
+      try {
+        // Verifica o token
+        verificarToken(token);
+        // Adiciona o token verificado ao req para verificar se já esta logado com token valido
+        req.tokenVerificado = token;
+      } catch (error) {
+        return res.status(401).json({ message: "Token inválido" });
+      }
+  }
+
+
+  next();
+};
+
 module.exports = verificar;
-
-// usuario.get('/protegido', (req, res) => {
-//   const token = req.headers.authorization?.split(' ')[1]; // Pegando o token do header Authorization
-//   if (!token) {
-//       return res.status(401).json({ error: 'Token não fornecido' });
-//   }
-
-//   try {
-//       const decoded = verificarToken(token);
-//       res.json({ message: 'Rota protegida acessada!', user: decoded });
-//   } catch (err) {
-//       res.status(401).json({ error: err.message });
-//   }
-// });
-
-// usuario.post('/login', (req, res) => {
-//   const { userId } = req.body; // Supondo que o ID do usuário foi autenticado
-//   const token = gerarToken(userId);
-//   res.json({ token });
-// });
