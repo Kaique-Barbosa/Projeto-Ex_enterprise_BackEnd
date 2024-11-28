@@ -3,9 +3,10 @@ const express = require('express');
 const cookieParser = require('cookie-parser');
 
 // inportando rotas
-const usuario = require('./routes/TDOUsuarios')
+const usuario = require('./routes/DTOUsuarios')
 const verificarToken = require('./routes/verificarToken')
 const gerarContrato = require('./routes/gerarContrato')
+const imoveis = require('./routes/DTOimoveis')
 
 const app = express();
 
@@ -18,6 +19,7 @@ app.use(cookieParser()); // necessario para manipular os tokens, foi instalado
 
 //Inportação do Fluxo de rotas:
 app.use("/usuario", usuario)
+app.use("/imoveis", imoveis)
 app.use("/verificarToken", verificarToken) // rota para verificar token no front
 app.use("/pdf", gerarContrato) // rota paragerar o contrato preenchido
 

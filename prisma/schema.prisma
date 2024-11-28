@@ -28,3 +28,35 @@ model User {
   cpf            String?   @unique
   telefone       String?
 }
+
+model Categoria {
+  id             Int       @id @default(autoincrement())
+  nome           String
+  descricao      String?
+  produtos  Produto[] // sinaliza ao prisma que esse model ira receber mts dados de categoria
+}
+
+model Produto {
+  id                 Int       @id @default(autoincrement())
+  nome               String
+  preco              Decimal   @db.Decimal(10, 2)
+  quantidade_estoque Int
+  fk_categoria_id    Int
+  categoria          Categoria @relation(fields: [fk_categoria_id], references: [id]) // criando relação de chave estrangeira
+  data_cadastro      DateTime  @default(now())
+}
+
+model Imovel {
+  id                  String  @id @default(uuid())
+  nome                String
+  endereco            String
+  disponibilidade     Boolean
+  valorAlocacao       Decimal @db.Decimal(10, 2)
+  valorCondominio     Decimal @db.Decimal(10, 2)
+  valorIPTU           Decimal @db.Decimal(10, 2)
+  areaImovel          Float?
+  quantidadeQuartos   Int?
+  quantidadeBanheiros Int?
+  vagasEstacionamento Int?
+  descricao           String?
+}
