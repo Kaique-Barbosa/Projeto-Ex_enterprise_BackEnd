@@ -9,11 +9,17 @@
     "jsonwebtoken": "^9.0.2",
     "nodemon": "^3.1.7"
   },
-  "devDependencies": {
-    "prisma": "^5.22.0"
+  "engines": {
+    "node": "20.9.0"
   },
-
-"scripts": {
-  "start": "nodemon server.js"
-}
+  "devDependencies": {
+    "prisma": "^5.22.0",
+    "tsup": "^8.3.5",
+    "typescript": "^5.7.2"
+  },
+  "scripts": {
+    "dev": "nodemon server.js",
+    "build": "tsup server.js",
+    "start": "node dist/server.js"
+  }
 }
