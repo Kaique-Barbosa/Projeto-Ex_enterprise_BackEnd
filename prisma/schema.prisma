@@ -7,6 +7,9 @@
 // Comando para migrar para o banco de dados
 // npx prisma migrate dev --name init
 
+// o comando abaixo serve para gerar arquivo .sql do schema do prisma
+// npx prisma migrate diff --from-empty --to-schema-datamodel ./prisma/schema.prisma --script > diretorio para salvar .sql
+
 generator client {
   provider = "prisma-client-js"
 }
@@ -48,7 +51,7 @@ model Produto {
 
 model Imovel {
   id                  String  @id @default(uuid())
-  nome                String
+  nome                String @unique
   endereco            String
   disponibilidade     Boolean
   valorAlocacao       Decimal @db.Decimal(10, 2)

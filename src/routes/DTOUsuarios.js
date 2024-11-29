@@ -2,6 +2,7 @@ const express = require("express");
 const { PrismaClient } = require("@prisma/client");
 const bycrypy = require("bcrypt");
 const { gerarToken, verificarToken } = require("../services/jwtToken");
+const verificarTokenLogin = require("../middleware/verificarTokenLogin");
 const verificarRota = require("../middleware/VerificarRotaProtegida");
 const prisma = new PrismaClient();
 const usuario = express.Router();
@@ -20,7 +21,7 @@ usuario.get("/", verificarRota, async (req, res) => {
 
 // rota para login
 
-usuario.post("/login", verificarRota, async (req, res) => {
+usuario.post("/login", verificarTokenLogin, async (req, res) => {
   try {
     if(req.tokenVerificado){
       return res.status(400).json({ status: "failed", message: "Usuário já está logado"})
@@ -68,12 +69,13 @@ usuario.post("/login", verificarRota, async (req, res) => {
 
 usuario.post("/cadastrar", async (req, res) => {
   try {
-    const { nome, sobrenome, email, telefone, senha } = req.body;
+    const { nome, sobrenome, email, senha, dataNascimento, dataCadastro, ativo, cpf, telefone } = req.body;
+
 
     if (!nome || !email || !senha || !sobrenome || !telefone) {
       return res
         .status(400)
-        .json({ error: "Todos os campos são obrigatórios" });
+        .json({ error: "Os campos (nome,  sobrenome,  email , senha, telefone) são obrigatórios" });
     }
     const senhaEncripty = await bycrypy.hash(senha, 10);
 
@@ -84,6 +86,10 @@ usuario.post("/cadastrar", async (req, res) => {
         email,
         telefone,
         senha: senhaEncripty,
+        dataNascimento, 
+        dataCadastro,
+         ativo,
+          cpf
       },
     });
 
