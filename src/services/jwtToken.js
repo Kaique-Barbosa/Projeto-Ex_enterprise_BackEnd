@@ -14,6 +14,7 @@ const gerarToken = (user, res) => {
     secure: true, // Apenas em dev
     maxAge: 60 * 60 * 1000, // Expira em 5 minutos (em milissegundos)
     // posteriormente mudar para: 60 * 60 * 1000 (1h)
+    sameSite: 'None'
   });
 
   return token; // Retorna o token caso seja necessário usá-lo
