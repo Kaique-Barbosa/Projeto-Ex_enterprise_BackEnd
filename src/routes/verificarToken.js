@@ -18,10 +18,10 @@ validarToken.get("/", function (req, res) {
     const payload = jwt.decode(token);
 
     // Verificar se o token é válido
-    verificarToken({ valid: true, ...payload });
+    verificarToken(token);
 
     // Se for válido, enviar a resposta positiva
-    res.status(200).json(true);
+    res.status(200).json({ valid: true, ...payload });
   } catch (error) {
     console.error("Erro ao validar token:", error.message);
 

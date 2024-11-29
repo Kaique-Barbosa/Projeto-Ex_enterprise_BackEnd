@@ -43,8 +43,8 @@ usuario.get("/:id", verificarRota, async (req, res) => {
 
 usuario.post("/login", verificarTokenLogin, async (req, res) => {
   try {
-    if (req.tokenVerificado) {
-      return res.status(400).json({ message: "Usuário já está logado" });
+    if(req.tokenVerificado){
+      return res.status(200).json({message: "Usuario já está logado"})
     }
 
     const { email, senha } = req.body;
