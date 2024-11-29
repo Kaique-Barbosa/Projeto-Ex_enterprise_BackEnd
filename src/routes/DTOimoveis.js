@@ -4,7 +4,7 @@ const verificarRota = require("../middleware/VerificarRotaProtegida");
 const prisma = new PrismaClient();
 const imoveis = express.Router();
 
-imoveis.get('/listar', verificarRota, async (req, res) => {
+imoveis.get('/listar', async (req, res) => {
   try {
     const dados =  await prisma.imovel.findMany()
     res.status(200).json(dados);
@@ -13,7 +13,7 @@ imoveis.get('/listar', verificarRota, async (req, res) => {
   }
 })
 
-imoveis.post('/listar/:id', verificarRota, async (req, res) => {
+imoveis.post('/listar/:id', async (req, res) => {
   try {
     const {id} = req.params
     
