@@ -11,7 +11,7 @@ const gerarToken = (user, res) => {
   // Salvar o token no cookie
   res.cookie('token', token, {
     httpOnly: true,  // O cookie não será acessível via JavaScript no navegador
-    secure: false, // Apenas em dev
+    secure: true, // Apenas em dev
     maxAge: 60 * 60 * 1000, // Expira em 5 minutos (em milissegundos)
     // posteriormente mudar para: 60 * 60 * 1000 (1h)
   });
