@@ -44,7 +44,7 @@ usuario.get("/:id", verificarRota, async (req, res) => {
 usuario.post("/login", verificarTokenLogin, async (req, res) => {
   try {
     if(req.tokenVerificado){
-      return res.status(200).json({message: "Usuario já está logado"})
+      return res.status(401).json({message: "Usuario já está logado"})
     }
 
     const { email, senha } = req.body;
@@ -144,7 +144,8 @@ usuario.post("/logout", async (req, res) => {
     // Limpar o cookie do JWT
     res.clearCookie("token", {
       httpOnly: true,
-      secure: false,
+      secure: true,
+      sameSite: "None"
     });
 
     res.status(200).json({ message: "Logout realizado com sucesso" });
