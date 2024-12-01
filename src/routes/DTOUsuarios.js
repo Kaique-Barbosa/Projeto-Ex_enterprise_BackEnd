@@ -84,6 +84,7 @@ usuario.post("/login", verificarTokenLogin, async (req, res) => {
 });
 
 usuario.post("/cadastrar", async (req, res) => {
+
   try {
     const {
       nome,
@@ -104,6 +105,18 @@ usuario.post("/cadastrar", async (req, res) => {
       });
     }
     const senhaEncripty = await bycrypy.hash(senha, 10);
+
+    
+    const verificar = await prisma.user.findFirst({
+      where:{
+        nome: nome,
+        sobrenome: sobrenome,
+        email:email,
+      }
+    })
+    if(verificar){
+     return  res.status(409).json({message: "Usuario já existe"})
+    }
 
     const usuario = await prisma.user.create({
       data: {
