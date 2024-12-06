@@ -1,7 +1,7 @@
 // src/app.js
 const express = require('express');
 const cookieParser = require('cookie-parser');
-
+const cors= require('cors')
 // inportando rotas
 const usuario = require('./routes/DTOUsuarios')
 const verificarToken = require('./routes/verificarToken')
@@ -10,6 +10,10 @@ const imoveis = require('./routes/DTOimoveis')
 
 const app = express();
 
+app.use(cors({
+    origin: "http://localhost:3000",
+    credentials: true
+}))
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
