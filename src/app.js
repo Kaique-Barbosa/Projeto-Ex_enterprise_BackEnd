@@ -11,7 +11,7 @@ const imoveis = require('./routes/DTOimoveis')
 const app = express();
 
 app.use(cors({
-    origin: "https://ex-enterprise.vercel.app",
+    origin: "https://ex-enterprise.vercel.app" ||"http://localhost:3000",
     credentials: true
 }))
 app.use(express.json());
