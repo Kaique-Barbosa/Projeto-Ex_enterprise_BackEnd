@@ -7,6 +7,7 @@ const generatePdf = (dadosLocador) => {
     const templatePath = path.resolve(
       __dirname,
       "../../public/contratos/modeloContrato.ejs"
+      
     );
 
     const config = {
@@ -20,7 +21,7 @@ const generatePdf = (dadosLocador) => {
       },
     };
 
-    // Renderiza o template EJS
+ 
     ejs.renderFile(templatePath, dadosLocador, (err, html) => {
       if (err) {
         console.error("Erro ao editar HTML:", err);

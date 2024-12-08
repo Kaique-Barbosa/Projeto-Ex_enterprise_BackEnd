@@ -6,6 +6,7 @@ const cors = require("cors");
 const usuario = require("./routes/DTOUsuarios");
 const verificarToken = require("./routes/verificarToken");
 const gerarContrato = require("./routes/gerarContrato");
+const DownloadEbooks = require("./routes/DownloadEbooks");
 const imoveis = require("./routes/DTOimoveis");
 
 const app = express();
@@ -27,5 +28,6 @@ app.use("/usuario", usuario);
 app.use("/imoveis", imoveis);
 app.use("/verificarToken", verificarToken); // rota para verificar token no front
 app.use("/pdf", gerarContrato); // rota paragerar o contrato preenchido
+app.use("/ebooks", DownloadEbooks); // rota fazesr download dos ebooks
 
 module.exports = app;
