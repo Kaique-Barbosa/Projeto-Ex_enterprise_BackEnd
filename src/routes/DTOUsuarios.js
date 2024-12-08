@@ -157,7 +157,7 @@ usuario.post("/logout", async (req, res) => {
     // Limpar o cookie do JWT
     res.clearCookie("token", {
       httpOnly: true,
-      secure: true,
+      secure: false,
       sameSite: "None"
     });
 
