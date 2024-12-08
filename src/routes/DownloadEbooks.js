@@ -1,14 +1,25 @@
 const express = require("express");
 const DownloadEbooks = express.Router();
-const validarEbooks = require("../middleware/baixarPdf");
+const validarEbooks = require("../middleware/verificarSeExisteEbook");
 
-DownloadEbooks.post("/baixar", validarEbooks, (req, res) => {
-  const { filename } = req.body;
+// Alterando de POST para GET e usando params
+DownloadEbooks.get("/baixar/:nomeDoArquivo", validarEbooks, (req, res) => {
+  const { nomeDoArquivo } = req.params;
 
   try {
-    res.download(req.filePath, filename, (err) => {
+    console.log("Iniciando download para o arquivo:", nomeDoArquivo);
+    console.log("Caminho completo do arquivo:", req.filePath);
+
+    // Definindo o cabeçalho manualmente (opcional)
+    res.setHeader("Content-Disposition", `attachment; filename="${nomeDoArquivo}"`);
+    res.setHeader("Content-Type", "application/pdf");
+
+    res.download(req.filePath, nomeDoArquivo, (err) => {
       if (err) {
         console.error("Erro durante o download do arquivo:", err);
+        res.status(500).send("Erro ao iniciar o download.");
+      } else {
+        console.log("Download concluído com sucesso.");
       }
     });
   } catch (error) {
