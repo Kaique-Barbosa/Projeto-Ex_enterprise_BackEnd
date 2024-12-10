@@ -1,66 +1,77 @@
-const puppeteer = require('puppeteer-core');
-const chromium = require('@sparticuz/chromium-min');
-const ejs = require('ejs');
-const axios = require('axios');
-const { Blob } = require('@vercel/blob');
+const pdf = require("html-pdf");
+const ejs = require("ejs");
+const path = require("path");
 
-//  por enquanto mão esta funcionando
-const generatePdf = async (dadosLocador) => {
-  try {
-    const templateUrl = "https://qsgsksirv7fkvuvt.public.blob.vercel-storage.com/modeloContrato/modeloContrato.ejs";
-    console.log("URL do template:", templateUrl);
+const generatePdf = (dadosLocador) => {
+  return new Promise((resolve, reject) => {
+    const templatePath = path.resolve(
+      __dirname,
+      "../../public/contratos/modeloContrato.ejs"
+      
+    );
 
-    const response = await axios.get(templateUrl);
-    console.log("Resposta do download do template:", response.status);
-    const templateContent = response.data;
-    console.log("Conteúdo do template:", templateContent);
+    const config = {
+      format: "A4",
+      orientation: "portrait",
+      border: {
+        top: "1cm",
+        right: "1cm",
+        bottom: "1cm",
+        left: "2cm",
+      },
+    };
 
-    const html = ejs.render(templateContent, dadosLocador);
-    console.log("HTML renderizado:", html);
-
-    const isLocal = process.env.AWS_EXECUTION_ENV === undefined;
-
-    const browser = isLocal
-      ? await require('puppeteer').launch()
-      : await puppeteer.launch({
-          args: chromium.args,
-          defaultViewport: chromium.defaultViewport,
-          executablePath: await chromium.executablePath(),
-          headless: chromium.headless,
-        });
-
-    const page = await browser.newPage();
-    await page.setContent(html);
-    console.log("Puppeteer inicializado e HTML definido na página");
-
-    const pdfBuffer = await page.pdf({
-      format: 'A4',
-      printBackground: true,
-      margin: {
-        top: '1cm',
-        right: '1cm',
-        bottom: '1cm',
-        left: '2cm'
+ 
+    ejs.renderFile(templatePath, dadosLocador, (err, html) => {
+      if (err) {
+        console.error("Erro ao editar HTML:", err);
+        return reject(err); // Rejeita a Promise em caso de erro
       }
+
+      const outputFilePath = path.resolve(
+        __dirname,
+        `../../src/assets/contratosGerados/contratoPreenchido_${dadosLocador.nomeLocador}.pdf`
+      );
+
+      // Cria o PDF a partir do HTML renderizado
+      pdf.create(html, config).toFile(outputFilePath, (err, res) => {
+        if (err) {
+          console.error("Erro ao criar PDF:", err);
+          return reject(err); // Rejeita a Promise em caso de erro
+        }
+
+        console.log("PDF gerado com sucesso:", res);
+        resolve(outputFilePath); // Resolve a Promise com o caminho do arquivo
+      });
     });
-    console.log("PDF gerado com sucesso");
-
-    await browser.close();
-    console.log("Navegador fechado");
-
-    const blobResponse = await Blob.upload({
-      data: pdfBuffer,
-      contentType: 'application/pdf',
-      name: `contratos/gerados/contratoPreenchido_${dadosLocador.nomeLocador}.pdf`,
-    });
-    console.log("PDF enviado para o Blob:", blobResponse.url);
-
-    return blobResponse.url;
-
-  } catch (error) {
-    console.error('Erro no processo de geração de PDF:', error);
-    throw error;
-  }
+  });
 };
 
+// Exporta a função para uso em outros arquivos
 module.exports = { generatePdf };
+
+
+// guia de uso:
+// const { generatePdf } = require("./caminho/para/o/arquivo");
+
+// const dadosLocador = {
+//     nomeLocador: "Kaique",
+//     estadoCivilLocador: "Solteiro",
+//     profissaoLocador: "Desenvolvedor",
+//     rgLocador: "123456789",
+//     cpfLocador: "123.456.789-00",
+//     locadouroLocador: "Rua Exemplo",
+//     logradouroNumeroLocador: "123",
+//     bairroLocador: "Centro",
+//     cidadeLocador: "Cidade Exemplo",
+//     cepLocador: "12345-678",
+//   };
+  
+//   generatePdf(dadosLocador)
+//     .then((filePath) => {
+//       console.log("PDF criado em:", filePath);
+//     })
+//     .catch((err) => {
+//       console.error("Erro ao gerar PDF:", err);
+//     });
+  
