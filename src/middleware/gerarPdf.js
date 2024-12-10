@@ -1,7 +1,7 @@
-const pdf = require("html-pdf");
-const ejs = require("ejs");
-const axios = require("axios");
-const { Blob } = require("@vercel/blob");
+const puppeteer = require('puppeteer');
+const ejs = require('ejs');
+const axios = require('axios');
+const { Blob } = require('@vercel/blob');
 
 const generatePdf = async (dadosLocador) => {
   try {
@@ -15,47 +15,39 @@ const generatePdf = async (dadosLocador) => {
     // Renderiza o HTML usando os dados fornecidos
     const html = ejs.render(templateContent, dadosLocador);
 
-    const config = {
-      format: "A4",
-      orientation: "portrait",
-      border: {
-        top: "1cm",
-        right: "1cm",
-        bottom: "1cm",
-        left: "2cm",
-      },
-    };
+    // Inicializa o Puppeteer
+    const browser = await puppeteer.launch();
+    const page = await browser.newPage();
+    await page.setContent(html);
 
-    // Gera o PDF em memória
-    return new Promise((resolve, reject) => {
-      pdf.create(html, config).toBuffer(async (err, buffer) => {
-        if (err) {
-          console.error("Erro ao criar PDF:", err);
-          return reject(err);
-        }
-
-        try {
-          // Salva o PDF no Vercel Blob
-          const blobResponse = await Blob.upload({
-            data: buffer,
-            contentType: "application/pdf",
-            name: `contratos/gerados/contratoPreenchido_${dadosLocador.nomeLocador}.pdf`,
-          });
-          
-
-          // Retorna a URL do PDF salvo
-          resolve(blobResponse.url);
-        } catch (uploadError) {
-          console.error("Erro ao enviar PDF para o Vercel Blob:", uploadError);
-          reject(uploadError);
-        }
-      });
+    // Gera o PDF a partir do conteúdo HTML
+    const pdfBuffer = await page.pdf({
+      format: 'A4',
+      printBackground: true,
+      margin: {
+        top: '1cm',
+        right: '1cm',
+        bottom: '1cm',
+        left: '2cm'
+      }
     });
+
+    await browser.close();
+
+    // Salva o PDF no Vercel Blob
+    const blobResponse = await Blob.upload({
+      data: pdfBuffer,
+      contentType: 'application/pdf',
+      name: `contratos/gerados/contratoPreenchido_${dadosLocador.nomeLocador}.pdf`,
+    });
+
+    // Retorna a URL do PDF salvo
+    return blobResponse.url;
+
   } catch (error) {
-    console.error("Erro no processo de geração de PDF:", error);
+    console.error('Erro no processo de geração de PDF:', error);
     throw error;
   }
 };
 
-// Exporta a função para uso em outros arquivos
 module.exports = { generatePdf };
