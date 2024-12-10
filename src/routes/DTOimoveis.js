@@ -6,78 +6,40 @@ const imoveis = express.Router();
 
 imoveis.get('/listar', async (req, res) => {
   try {
-    const dados =  await prisma.imovel.findMany()
+    const dados = await prisma.imovel.findMany();
     res.status(200).json(dados);
   } catch (error) {
-    res.status(500).json("Erro ao buscar imoveis", error);
+    res.status(500).json({ error: "Erro ao buscar imóveis", details: error.message });
   }
-})
+});
 
 imoveis.post('/listar/:id', async (req, res) => {
   try {
-    const {id} = req.params
-    
-    const dados =  await prisma.imovel.findFirst({
-      where: {
-        id: id
-      }
-    })
+    const { id } = req.params;
+    const dados = await prisma.imovel.findFirst({
+      where: { id: id }
+    });
 
-    if(dados === null){
-      res.status(400).json("Imovel não consta no sistema");  
+    if (dados === null) {
+      return res.status(404).json({ message: "Imóvel não consta no sistema" });
     }
 
     res.status(200).json(dados);
   } catch (error) {
-    res.status(500).json("Erro ao buscar o imoveis", error);
+    res.status(500).json({ error: "Erro ao buscar o imóvel", details: error.message });
   }
-})
+});
 
-
-imoveis.post('/cadastrar',verificarRota, async (req, res) => {
+imoveis.post('/cadastrar', verificarRota, async (req, res) => {
   try {
-    const { nome, endereco, disponibilidade, valorAlocacao, valorCondominio, valorIPTU, areaImovel, quantidadeQuartos, quantidadeBanheiros, vagasEstacionamento, descricao } = req.body
+    const { nome, endereco, disponibilidade, valorAlocacao, valorCondominio, valorIPTU, areaImovel, quantidadeQuartos, quantidadeBanheiros, vagasEstacionamento, descricao } = req.body;
 
     if (!nome || !endereco || !disponibilidade || !valorAlocacao || !valorCondominio || !valorIPTU) {
-      return res
-        .status(400)
-        .json({ error: "Os campos ( nome, endereco, disponibilidade, valorAlocacao, valorCondominio, valorIPTU ) são obrigatórios" });
+      return res.status(400).json({ error: "Os campos (nome, endereco, disponibilidade, valorAlocacao, valorCondominio, valorIPTU) são obrigatórios" });
     }
-    
 
-      const imovel = await prisma.imovel.create({
-          data:{
-            nome, 
-            endereco, 
-            disponibilidade,
-            valorAlocacao, 
-            valorCondominio, 
-            valorIPTU, 
-            areaImovel, 
-            quantidadeQuartos,
-            quantidadeBanheiros,
-            vagasEstacionamento, 
-            descricao
-          }
-      })
-      res.status(200).json({ message: "Imovel adicionado com sucesso"});
-  } catch (error) {
-    res.status(500).json({ error: "Erro ao adicionar imovel"});
-  }
-})
-
-
-imoveis.put('/:id', verificarRota ,async (req, res) => {
-  try {
-    
-    const {id} = req.params
-    const { nome, endereco, disponibilidade, valorAlocacao, valorCondominio, valorIPTU, areaImovel, quantidadeQuartos, quantidadeBanheiros, vagasEstacionamento, descricao } = req.body
-  
-    const dados = await prisma.imovel.update({
-      where:{
-        id: id
-      },
-      data:{
+    const imovel = await prisma.imovel.create({
+      data: {
         nome, 
         endereco, 
         disponibilidade,
@@ -90,21 +52,46 @@ imoveis.put('/:id', verificarRota ,async (req, res) => {
         vagasEstacionamento, 
         descricao
       }
-    })
-    res.status(200).json({message: "imovel atualizado com sucesso"})
+    });
 
+    res.status(201).json({ message: "Imóvel adicionado com sucesso" });
   } catch (error) {
-    res.status(500).json({message: "Não foi possivel atualizar o imovel"})
+    res.status(500).json({ error: "Erro ao adicionar imóvel", details: error.message });
   }
- 
 });
 
+imoveis.put('/:id', verificarRota, async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { nome, endereco, disponibilidade, valorAlocacao, valorCondominio, valorIPTU, areaImovel, quantidadeQuartos, quantidadeBanheiros, vagasEstacionamento, descricao } = req.body;
 
-imoveis.delete('/:id', verificarRota,  async (req, res) => {
+    const dados = await prisma.imovel.update({
+      where: { id: id },
+      data: {
+        nome, 
+        endereco, 
+        disponibilidade,
+        valorAlocacao, 
+        valorCondominio, 
+        valorIPTU, 
+        areaImovel, 
+        quantidadeQuartos,
+        quantidadeBanheiros,
+        vagasEstacionamento, 
+        descricao
+      }
+    });
+
+    res.status(200).json({ message: "Imóvel atualizado com sucesso" });
+  } catch (error) {
+    res.status(500).json({ message: "Não foi possível atualizar o imóvel", error: error.message });
+  }
+});
+
+imoveis.delete('/:id', verificarRota, async (req, res) => {
   const { id } = req.params;
 
   try {
-    // Verifique se o imóvel existe antes de deletar
     const imovel = await prisma.imovel.findUnique({
       where: { id: id }
     });
@@ -119,10 +106,8 @@ imoveis.delete('/:id', verificarRota,  async (req, res) => {
 
     res.status(200).json({ message: "Imóvel deletado com sucesso" });
   } catch (error) {
-    res.status(500).json({ message: "Erro ao deletar o imóvel", error });
+    res.status(500).json({ message: "Erro ao deletar o imóvel", error: error.message });
   }
 });
 
-
-
-module.exports = imoveis
+module.exports = imoveis;
