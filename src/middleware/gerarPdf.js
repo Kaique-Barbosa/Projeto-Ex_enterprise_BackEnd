@@ -1,37 +1,37 @@
-const chromium = require('chrome-aws-lambda');
 const puppeteer = require('puppeteer-core');
+const chromium = require('@sparticuz/chromium-min');
 const ejs = require('ejs');
 const axios = require('axios');
 const { Blob } = require('@vercel/blob');
 
 const generatePdf = async (dadosLocador) => {
   try {
-    // URL do modelo de contrato no Vercel Blob
     const templateUrl = "https://qsgsksirv7fkvuvt.public.blob.vercel-storage.com/modeloContrato/modeloContrato.ejs";
     console.log("URL do template:", templateUrl);
 
-    // Baixa o modelo de contrato
     const response = await axios.get(templateUrl);
     console.log("Resposta do download do template:", response.status);
     const templateContent = response.data;
     console.log("Conteúdo do template:", templateContent);
 
-    // Renderiza o HTML usando os dados fornecidos
     const html = ejs.render(templateContent, dadosLocador);
     console.log("HTML renderizado:", html);
 
-    // Inicializa o Puppeteer com o Chrome do chrome-aws-lambda
-    const browser = await puppeteer.launch({
-      args: chromium.args,
-      executablePath: await chromium.executablePath,
-      headless: chromium.headless,
-    });
+    const isLocal = process.env.AWS_EXECUTION_ENV === undefined;
+
+    const browser = isLocal
+      ? await require('puppeteer').launch()
+      : await puppeteer.launch({
+          args: chromium.args,
+          defaultViewport: chromium.defaultViewport,
+          executablePath: await chromium.executablePath(),
+          headless: chromium.headless,
+        });
 
     const page = await browser.newPage();
     await page.setContent(html);
     console.log("Puppeteer inicializado e HTML definido na página");
 
-    // Gera o PDF a partir do conteúdo HTML
     const pdfBuffer = await page.pdf({
       format: 'A4',
       printBackground: true,
@@ -47,7 +47,6 @@ const generatePdf = async (dadosLocador) => {
     await browser.close();
     console.log("Navegador fechado");
 
-    // Salva o PDF no Vercel Blob
     const blobResponse = await Blob.upload({
       data: pdfBuffer,
       contentType: 'application/pdf',
@@ -55,7 +54,6 @@ const generatePdf = async (dadosLocador) => {
     });
     console.log("PDF enviado para o Blob:", blobResponse.url);
 
-    // Retorna a URL do PDF salvo
     return blobResponse.url;
 
   } catch (error) {
