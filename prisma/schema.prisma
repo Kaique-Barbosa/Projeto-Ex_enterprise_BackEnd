@@ -15,7 +15,7 @@ generator client {
 }
 
 datasource db {
-  provider = "mysql" //alterar para postgresql, mudei so pra testar deploy
+  provider = "postgresql" //alterar para postgresql, mudei so pra testar deploy
   url      = env("DATABASE_URL")
 }
 
