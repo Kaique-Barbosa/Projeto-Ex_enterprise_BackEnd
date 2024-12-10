@@ -1,4 +1,5 @@
-const puppeteer = require('puppeteer');
+const chromium = require('chrome-aws-lambda');
+const puppeteer = require('puppeteer-core');
 const ejs = require('ejs');
 const axios = require('axios');
 const { Blob } = require('@vercel/blob');
@@ -19,8 +20,13 @@ const generatePdf = async (dadosLocador) => {
     const html = ejs.render(templateContent, dadosLocador);
     console.log("HTML renderizado:", html);
 
-    // Inicializa o Puppeteer
-    const browser = await puppeteer.launch();
+    // Inicializa o Puppeteer com o Chrome do chrome-aws-lambda
+    const browser = await puppeteer.launch({
+      args: chromium.args,
+      executablePath: await chromium.executablePath,
+      headless: chromium.headless,
+    });
+
     const page = await browser.newPage();
     await page.setContent(html);
     console.log("Puppeteer inicializado e HTML definido na página");
