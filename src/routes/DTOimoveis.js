@@ -34,7 +34,7 @@ imoveis.post('/cadastrar', verificarRota, async (req, res) => {
   try {
     const { nome, endereco, disponibilidade, valorAlocacao, valorCondominio, valorIPTU, areaImovel, quantidadeQuartos, quantidadeBanheiros, vagasEstacionamento, descricao } = req.body;
 
-    if (!nome || !endereco || !disponibilidade || !valorAlocacao || !valorCondominio || !valorIPTU) {
+    if (!nome || !endereco  || !valorAlocacao || !valorCondominio || !valorIPTU) {
       return res.status(400).json({ error: "Os campos (nome, endereco, disponibilidade, valorAlocacao, valorCondominio, valorIPTU) são obrigatórios" });
     }
 
