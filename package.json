@@ -21,6 +21,7 @@
   "scripts": {
     "dev": "nodemon server.js",
     "build": "tsup server.js",
-    "start": "node dist/server.js"
+    "start": "node dist/server.js",
+    "vercel-build": "npm run build && prisma generate"
   }
 }
