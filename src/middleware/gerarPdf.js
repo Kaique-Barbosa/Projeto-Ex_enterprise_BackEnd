@@ -1,77 +1,110 @@
-const pdf = require("html-pdf");
-const ejs = require("ejs");
-const path = require("path");
+const axios = require("axios"); // Importação do axios
+const handlebars = require("handlebars");
+const puppeteer = require("puppeteer");
+const fs = require("fs"); // Para salvar localmente o PDF
+const path = require("path"); // Para garantir o caminho correto
+const { put } = require("@vercel/blob"); // SDK do Vercel Blob
 
-const generatePdf = (dadosLocador) => {
-  return new Promise((resolve, reject) => {
-    const templatePath = path.resolve(
-      __dirname,
-      "../../public/contratos/modeloContrato.ejs"
-      
-    );
+// URL do Vercel Blob (Você pode ajustar essa URL conforme seu serviço no Vercel)
+const vercelBlobUploadUrl = "https://qsgsksirv7fkvuvt.public.blob.vercel-storage.com"; // Altere para a URL correta
 
-    const config = {
-      format: "A4",
-      orientation: "portrait",
-      border: {
-        top: "1cm",
-        right: "1cm",
-        bottom: "1cm",
-        left: "2cm",
+const generatePdf = async (dadosLocador) => {
+  try {
+    // console.log("Iniciando geração de PDF...");
+
+    // URL do template no Vercel Blob
+    const templateUrl = "https://qsgsksirv7fkvuvt.public.blob.vercel-storage.com/modeloContrato/modeloContrato.hbs";
+    
+
+    // Faz a requisição HTTP para buscar o template
+    const response = await axios.get(templateUrl);
+    // console.log("Template carregado com sucesso.");
+
+    const templateContent = response.data; // Conteúdo do template
+    console.log("Conteúdo do template:", templateContent.slice(0, 100)); // Log do início do conteúdo (para evitar mostrar muito conteúdo)
+
+    // Compila o template com Handlebars
+    const parseTemplate = handlebars.compile(templateContent);
+    // console.log("Template compilado.");
+
+    // Gera o HTML com as variáveis fornecidas
+    const parsedHTML = parseTemplate(dadosLocador);
+    // console.log("HTML gerado a partir do template.");
+
+    // Inicializa o Puppeteer para criar o PDF
+    // console.log("Iniciando o Puppeteer...");
+    const browser = await puppeteer.launch();
+    const page = await browser.newPage();  // Criação da página
+    console.log("Página criada no Puppeteer.");
+
+    // Define o conteúdo HTML na página
+    // console.log("Setando conteúdo HTML na página...");
+    await page.setContent(parsedHTML);
+    // console.log("Conteúdo HTML setado na página do Puppeteer.");
+
+    await page.emulateMediaType("screen");
+
+    // Gera o PDF em buffer
+    console.log("Gerando o PDF...");
+    const pdfBuffer = await page.pdf({
+      format: "A4",              // Define o tamanho da página
+      printBackground: true,     // Garante que o fundo seja impresso
+      margin: {                  // Defina margens para evitar cortes
+        top: "20mm",
+        right: "20mm",
+        bottom: "20mm",
+        left: "20mm",
       },
-    };
-
- 
-    ejs.renderFile(templatePath, dadosLocador, (err, html) => {
-      if (err) {
-        console.error("Erro ao editar HTML:", err);
-        return reject(err); // Rejeita a Promise em caso de erro
-      }
-
-      const outputFilePath = path.resolve(
-        __dirname,
-        `../../src/assets/contratosGerados/contratoPreenchido_${dadosLocador.nomeLocador}.pdf`
-      );
-
-      // Cria o PDF a partir do HTML renderizado
-      pdf.create(html, config).toFile(outputFilePath, (err, res) => {
-        if (err) {
-          console.error("Erro ao criar PDF:", err);
-          return reject(err); // Rejeita a Promise em caso de erro
-        }
-
-        console.log("PDF gerado com sucesso:", res);
-        resolve(outputFilePath); // Resolve a Promise com o caminho do arquivo
-      });
+      scale: 1,                  // Escala o conteúdo da página
+      preferCSSPageSize: true,   // Usa o tamanho da página conforme o CSS (caso tenha)
     });
-  });
+
+    console.log("PDF gerado com sucesso.");
+
+    // Defina o caminho onde o PDF será salvo
+    const directoryPath = path.join(__dirname, "..", "public", "contratosGerados"); // Correção do caminho com o path.join
+   
+
+    // Verifique se o diretório existe, e se não, crie-o
+    if (!fs.existsSync(directoryPath)) {
+      fs.mkdirSync(directoryPath, { recursive: true });
+     
+    }
+
+    // Caminho completo do arquivo
+    const filePath = path.join(directoryPath, `contratoPreenchido_${dadosLocador.nomeLocador}.pdf`);
+ 
+
+    // Salva o PDF localmente no servidor
+    fs.writeFileSync(filePath, pdfBuffer); // Escreve o arquivo no sistema de arquivos local
+   
+
+    // -------------------------- INÍCIO DO UPLOAD PARA O VERCEL BLOB --------------------------
+
+    // Preparando o nome do arquivo no Vercel Blob
+    const fileName = `contratosGerados/contratoPreenchido_${dadosLocador.nomeLocador}.pdf`;
+
+    // console.log("Iniciando upload para o Vercel Blob...");
+
+    // Envia o arquivo para o Vercel Blob usando o método 'put' do SDK
+    const { url } = await put(fileName, pdfBuffer, {
+      contentType: "application/pdf", // Tipo de conteúdo do arquivo
+      access: "public", // Acessível publicamente
+    });
+
+    // console.log("Upload para o Vercel Blob concluído.");
+    console.log("URL do arquivo no Vercel Blob:", url); // Log da URL do arquivo
+
+    // -------------------------- FIM DO UPLOAD PARA O VERCEL BLOB --------------------------
+
+    await browser.close();
+    console.log("Puppeteer fechado.");
+
+    return pdfBuffer; // Retorna o buffer do PDF para posterior envio ou outro uso
+  } catch (error) {
+    console.error("Erro ao gerar PDF:", error);
+    throw error;
+  }
 };
 
-// Exporta a função para uso em outros arquivos
 module.exports = { generatePdf };
-
-
-// guia de uso:
-// const { generatePdf } = require("./caminho/para/o/arquivo");
-
-// const dadosLocador = {
-//     nomeLocador: "Kaique",
-//     estadoCivilLocador: "Solteiro",
-//     profissaoLocador: "Desenvolvedor",
-//     rgLocador: "123456789",
-//     cpfLocador: "123.456.789-00",
-//     locadouroLocador: "Rua Exemplo",
-//     logradouroNumeroLocador: "123",
-//     bairroLocador: "Centro",
-//     cidadeLocador: "Cidade Exemplo",
-//     cepLocador: "12345-678",
-//   };
-  
-//   generatePdf(dadosLocador)
-//     .then((filePath) => {
-//       console.log("PDF criado em:", filePath);
-//     })
-//     .catch((err) => {
-//       console.error("Erro ao gerar PDF:", err);
-//     });
-  
