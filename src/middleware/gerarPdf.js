@@ -4,6 +4,7 @@ const ejs = require('ejs');
 const axios = require('axios');
 const { Blob } = require('@vercel/blob');
 
+//  por enquanto mão esta funcionando
 const generatePdf = async (dadosLocador) => {
   try {
     const templateUrl = "https://qsgsksirv7fkvuvt.public.blob.vercel-storage.com/modeloContrato/modeloContrato.ejs";
