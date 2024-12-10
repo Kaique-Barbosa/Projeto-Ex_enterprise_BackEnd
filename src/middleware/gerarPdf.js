@@ -1,14 +1,19 @@
 const pdf = require("html-pdf");
 const ejs = require("ejs");
-const path = require("path");
+const axios = require("axios");
+const { Blob } = require("@vercel/blob");
 
-const generatePdf = (dadosLocador) => {
-  return new Promise((resolve, reject) => {
-    const templatePath = path.resolve(
-      __dirname,
-      "../../public/contratos/modeloContrato.ejs"
-      
-    );
+const generatePdf = async (dadosLocador) => {
+  try {
+    // URL do modelo de contrato no Vercel Blob
+    const templateUrl = "https://qsgsksirv7fkvuvt.public.blob.vercel-storage.com/modeloContrato/modeloContrato.ejs";
+
+    // Baixa o modelo de contrato
+    const response = await axios.get(templateUrl);
+    const templateContent = response.data;
+
+    // Renderiza o HTML usando os dados fornecidos
+    const html = ejs.render(templateContent, dadosLocador);
 
     const config = {
       format: "A4",
@@ -21,57 +26,36 @@ const generatePdf = (dadosLocador) => {
       },
     };
 
- 
-    ejs.renderFile(templatePath, dadosLocador, (err, html) => {
-      if (err) {
-        console.error("Erro ao editar HTML:", err);
-        return reject(err); // Rejeita a Promise em caso de erro
-      }
-
-      const outputFilePath = path.resolve(
-        __dirname,
-        `../../src/assets/contratosGerados/contratoPreenchido_${dadosLocador.nomeLocador}.pdf`
-      );
-
-      // Cria o PDF a partir do HTML renderizado
-      pdf.create(html, config).toFile(outputFilePath, (err, res) => {
+    // Gera o PDF em memória
+    return new Promise((resolve, reject) => {
+      pdf.create(html, config).toBuffer(async (err, buffer) => {
         if (err) {
           console.error("Erro ao criar PDF:", err);
-          return reject(err); // Rejeita a Promise em caso de erro
+          return reject(err);
         }
 
-        console.log("PDF gerado com sucesso:", res);
-        resolve(outputFilePath); // Resolve a Promise com o caminho do arquivo
+        try {
+          // Salva o PDF no Vercel Blob
+          const blobResponse = await Blob.upload({
+            data: buffer,
+            contentType: "application/pdf",
+            name: `contratos/gerados/contratoPreenchido_${dadosLocador.nomeLocador}.pdf`,
+          });
+          
+
+          // Retorna a URL do PDF salvo
+          resolve(blobResponse.url);
+        } catch (uploadError) {
+          console.error("Erro ao enviar PDF para o Vercel Blob:", uploadError);
+          reject(uploadError);
+        }
       });
     });
-  });
+  } catch (error) {
+    console.error("Erro no processo de geração de PDF:", error);
+    throw error;
+  }
 };
 
 // Exporta a função para uso em outros arquivos
 module.exports = { generatePdf };
-
-
-// guia de uso:
-// const { generatePdf } = require("./caminho/para/o/arquivo");
-
-// const dadosLocador = {
-//     nomeLocador: "Kaique",
-//     estadoCivilLocador: "Solteiro",
-//     profissaoLocador: "Desenvolvedor",
-//     rgLocador: "123456789",
-//     cpfLocador: "123.456.789-00",
-//     locadouroLocador: "Rua Exemplo",
-//     logradouroNumeroLocador: "123",
-//     bairroLocador: "Centro",
-//     cidadeLocador: "Cidade Exemplo",
-//     cepLocador: "12345-678",
-//   };
-  
-//   generatePdf(dadosLocador)
-//     .then((filePath) => {
-//       console.log("PDF criado em:", filePath);
-//     })
-//     .catch((err) => {
-//       console.error("Erro ao gerar PDF:", err);
-//     });
-  
