@@ -2,12 +2,10 @@ const axios = require("axios"); // Importação do axios
 const handlebars = require("handlebars");
 const puppeteer = require("puppeteer-core");
 const chromium = require("@sparticuz/chromium");
-const fs = require("fs"); // Para salvar localmente o PDF
-const path = require("path"); // Para garantir o caminho correto
 const { put } = require("@vercel/blob"); // SDK do Vercel Blob
 
 // URL do Vercel Blob (Você pode ajustar essa URL conforme seu serviço no Vercel)
-const vercelBlobUploadUrl = "https://qsgsksirv7fkvuvt.public.blob.vercel-storage.com"; // Altere para a URL correta
+
 
 const generatePdf = async (dadosLocador) => {
   try {
@@ -57,24 +55,6 @@ const generatePdf = async (dadosLocador) => {
 
     console.log("PDF gerado com sucesso.");
 
-    // Defina o caminho onde o PDF será salvo
-    // const directoryPath = path.join(__dirname, "..", "public", "contratosGerados"); // Correção do caminho com o path.join
-   
-
-    // Verifique se o diretório existe, e se não, crie-o
-    // if (!fs.existsSync(directoryPath)) {
-    //   fs.mkdirSync(directoryPath, { recursive: true });
-     
-    // }
-
-    // // Caminho completo do arquivo
-    // const filePath = path.join(directoryPath, `contratoPreenchido_${dadosLocador.nomeLocador}.pdf`);
- 
-
-    // // Salva o PDF localmente no servidor
-    // fs.writeFileSync(filePath, pdfBuffer); // Escreve o arquivo no sistema de arquivos local
-   
-
     // -------------------------- INÍCIO DO UPLOAD PARA O VERCEL BLOB --------------------------
 
     // Preparando o nome do arquivo no Vercel Blob
@@ -86,9 +66,6 @@ const generatePdf = async (dadosLocador) => {
       token: tokenvalor,
       access: 'public',
     });
-
-    // console.log("Upload para o Vercel Blob concluído.");
-    console.log("URL do arquivo no Vercel Blob:", url); // Log da URL do arquivo
 
     // -------------------------- FIM DO UPLOAD PARA O VERCEL BLOB --------------------------
 
