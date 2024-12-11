@@ -1,6 +1,7 @@
 const axios = require("axios"); // Importação do axios
 const handlebars = require("handlebars");
-const puppeteer = require("puppeteer");
+const puppeteer = require('puppeteer-core');
+const chromium = require('@sparticuz/chromium');
 const fs = require("fs"); // Para salvar localmente o PDF
 const path = require("path"); // Para garantir o caminho correto
 const { put } = require("@vercel/blob"); // SDK do Vercel Blob
@@ -9,6 +10,12 @@ const { put } = require("@vercel/blob"); // SDK do Vercel Blob
 const vercelBlobUploadUrl = "https://qsgsksirv7fkvuvt.public.blob.vercel-storage.com"; // Altere para a URL correta
 
 const generatePdf = async (dadosLocador) => {
+  const browser = await puppeteer.launch({
+    executablePath: await chromium.executablePath(),
+    args: chromium.args,
+    headless: chromium.headless,
+  });
+
   try {
     // console.log("Iniciando geração de PDF...");
 
