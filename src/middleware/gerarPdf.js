@@ -9,7 +9,7 @@ const { put } = require("@vercel/blob"); // SDK do Vercel Blob
 // URL do Vercel Blob (Você pode ajustar essa URL conforme seu serviço no Vercel)
 const vercelBlobUploadUrl = "https://qsgsksirv7fkvuvt.public.blob.vercel-storage.com"; // Altere para a URL correta
 
-const generatePdf = async (dadosLocador) => {
+const generatePdf = async (dadosLocador, tokenvalor) => {
 //   const browser = await puppeteer.launch({
 //     executablePath: await chromium.executablePath(),
 //     args: chromium.args,
@@ -98,9 +98,10 @@ const generatePdf = async (dadosLocador) => {
     // console.log("Iniciando upload para o Vercel Blob...");
 
     // Envia o arquivo para o Vercel Blob usando o método 'put' do SDK
-    const { url } = await put(fileName, pdfBuffer, {
+    const  url  = await put(fileName, pdfBuffer, {
       contentType: "application/pdf", // Tipo de conteúdo do arquivo
-      access: "public", // Acessível publicamente
+      access: "public",
+      token: tokenvalor // Acessível publicamente
     });
 
     // console.log("Upload para o Vercel Blob concluído.");
