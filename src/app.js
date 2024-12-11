@@ -28,6 +28,6 @@ app.use("/usuario", usuario);
 app.use("/imoveis", imoveis);
 app.use("/verificarToken", verificarToken); // rota para verificar token no front
 app.use("/pdf", gerarContrato); // rota paragerar o contrato preenchido
-app.use("/ebooks", DownloadEbooks); // rota fazesr download dos ebooks
+// app.use("/ebooks", DownloadEbooks); // rota fazesr download dos ebooks
 
 module.exports = app;
