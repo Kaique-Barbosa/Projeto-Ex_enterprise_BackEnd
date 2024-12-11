@@ -13,7 +13,7 @@ imoveis.get('/listar', async (req, res) => {
   }
 });
 
-imoveis.post('/listar/:id', async (req, res) => {
+imoveis.get('/listar/:id', async (req, res) => {
   try {
     const { id } = req.params;
     const dados = await prisma.imovel.findFirst({
