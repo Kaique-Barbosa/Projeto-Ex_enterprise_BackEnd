@@ -1,34 +1,30 @@
 const express = require("express");
 const verificarRota = require("../middleware/VerificarRotaProtegida");
-const {generatePdf} = require('../middleware/gerarPdf')
-// const fs = require("fs")
+const { generatePdf } = require("../middleware/gerarPdf"); 
 const rotaPdf = express.Router();
 
-rotaPdf.post('/gerar', verificarRota, async(req, res) => {
-  const dadosLocador = req.body
+// adicionar depois o verificarRota abaixo
+rotaPdf.post("/gerar", async (req, res) => {
+  const dadosLocador = req.body;
 
-  try {
-    // gera o pdf e recebe o caminho do arquivo
-    const pdfPath = await generatePdf(dadosLocador)
-    
-    res.sendFile(pdfPath, (err)=>{
-        if(err){
-            console.error("erro ao enviar PDF: ", err)
-            res.status(500).send("Erro ao enviar PDF")
-        }
-        // a biblioteca abaixo excluira o arquivo pdf apos o envio, 
-        // sendo assim não ira ficar salvo na memoria do server
-
-        // fs.unlink(pdfPath, (err) => {
-        //     if (err) console.error("Erro ao deletar arquivo:", err);
-        //   });
-    })
-
-  } catch (error) {
-    console.error("Erro ao gerar o PDF:", error);
-    res.status(500).send("Erro ao gerar o PDF");
+  // Validação simples dos dados (ajuste conforme necessário)
+  if (!dadosLocador || !dadosLocador.nomeLocador) {
+    return res.status(400).json({ error: "Dados inválidos, nome do locador é obrigatório." });
   }
 
-})
+  try {
+    // Gera o PDF e realiza o upload no Vercel Blob
+    const {url} = await generatePdf(dadosLocador);
 
-module.exports = rotaPdf
+    // Retorna a URL do arquivo salvo no Vercel Blob
+    res.status(200).json({
+      message: "PDF gerado com sucesso.",
+      url: url,
+    });
+  } catch (error) {
+    console.error("Erro ao gerar o PDF:", error.message);
+    res.status(500).json({ error: "Erro ao gerar o PDF." });
+  }
+});
+
+module.exports = rotaPdf;

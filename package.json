@@ -1,23 +1,31 @@
 {
   "dependencies": {
     "@prisma/client": "^5.22.0",
+    "@sparticuz/chromium": "^131.0.1",
+    "@vercel/blob": "^0.27.0",
+    "axios": "^1.7.9",
     "bcrypt": "^5.1.1",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
     "ejs": "^3.1.10",
     "express": "^4.21.1",
+    "handlebars": "^4.7.8",
     "html-pdf": "^3.0.1",
     "jsonwebtoken": "^9.0.2",
-    "nodemon": "^3.1.7"
+    "nodemon": "^3.1.7",
+    "puppeteer": "^23.10.3",
+    "puppeteer-core": "^23.10.3"
   },
   "engines": {
-    "node": "20.9.0"
+    "node": "20.x"
   },
   "devDependencies": {
     "prisma": "^5.22.0",
     "tsup": "^8.3.5",
     "typescript": "^5.7.2"
   },
+  "module": "true",
   "scripts": {
     "dev": "nodemon server.js",
     "build": "tsup server.js",
