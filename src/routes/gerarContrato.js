@@ -3,8 +3,7 @@ const verificarRota = require("../middleware/VerificarRotaProtegida");
 const { generatePdf } = require("../middleware/gerarPdf"); 
 const rotaPdf = express.Router();
 
-// adicionar depois o verificarRota abaixo
-rotaPdf.post("/gerar", async (req, res) => {
+rotaPdf.post("/gerar", verificarRota, async (req, res) => {
   const dadosLocador = req.body;
 
   // Validação simples dos dados (ajuste conforme necessário)
