@@ -19,7 +19,7 @@ rotaPdf.post("/gerar", async (req, res) => {
     // Retorna a URL do arquivo salvo no Vercel Blob
     res.status(200).json({
       message: "PDF gerado com sucesso.",
-      url: `https://qsgsksirv7fkvuvt.public.blob.vercel-storage.com/contratosGerados/contratoPreenchido_${dadosLocador.nomeLocador}.pdf`,
+      url: `https://qsgsksirv7fkvuvt.public.blob.vercel-storage.com/contratosGerados/contratoPreenchid_${dadosLocador.nomeLocador}.pdf`,
     });
   } catch (error) {
     console.error("Erro ao gerar o PDF:", error.message);
