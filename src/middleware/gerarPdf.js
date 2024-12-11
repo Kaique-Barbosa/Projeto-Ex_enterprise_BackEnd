@@ -81,7 +81,7 @@ const generatePdf = async (dadosLocador) => {
     const fileName = `contratosGerados/contrato_${dadosLocador.nomeLocador}.txt`;
     const texto = "texto de testes para verificar "
     // Envia o arquivo para o Vercel Blob usando o método 'put' do SDK
-    const  url  = await put(fileName, texto, {
+    const  url  = await put(`testeUpload.txt`, texto, {
       contentType: "text/plain", 
       addRandomSuffix: false,
       token: tokenvalor,
