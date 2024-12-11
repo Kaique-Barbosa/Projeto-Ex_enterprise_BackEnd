@@ -10,11 +10,11 @@ const { put } = require("@vercel/blob"); // SDK do Vercel Blob
 const vercelBlobUploadUrl = "https://qsgsksirv7fkvuvt.public.blob.vercel-storage.com"; // Altere para a URL correta
 
 const generatePdf = async (dadosLocador) => {
-  const browser = await puppeteer.launch({
-    executablePath: await chromium.executablePath(),
-    args: chromium.args,
-    headless: chromium.headless,
-  });
+//   const browser = await puppeteer.launch({
+//     executablePath: await chromium.executablePath(),
+//     args: chromium.args,
+//     headless: chromium.headless,
+//   });
 
   try {
     // console.log("Iniciando geração de PDF...");
@@ -73,21 +73,21 @@ const generatePdf = async (dadosLocador) => {
     console.log("PDF gerado com sucesso.");
 
     // Defina o caminho onde o PDF será salvo
-    const directoryPath = path.join(__dirname, "..", "public", "contratosGerados"); // Correção do caminho com o path.join
+    // const directoryPath = path.join(__dirname, "..", "public", "contratosGerados"); // Correção do caminho com o path.join
    
 
     // Verifique se o diretório existe, e se não, crie-o
-    if (!fs.existsSync(directoryPath)) {
-      fs.mkdirSync(directoryPath, { recursive: true });
+    // if (!fs.existsSync(directoryPath)) {
+    //   fs.mkdirSync(directoryPath, { recursive: true });
      
-    }
+    // }
 
-    // Caminho completo do arquivo
-    const filePath = path.join(directoryPath, `contratoPreenchido_${dadosLocador.nomeLocador}.pdf`);
+    // // Caminho completo do arquivo
+    // const filePath = path.join(directoryPath, `contratoPreenchido_${dadosLocador.nomeLocador}.pdf`);
  
 
-    // Salva o PDF localmente no servidor
-    fs.writeFileSync(filePath, pdfBuffer); // Escreve o arquivo no sistema de arquivos local
+    // // Salva o PDF localmente no servidor
+    // fs.writeFileSync(filePath, pdfBuffer); // Escreve o arquivo no sistema de arquivos local
    
 
     // -------------------------- INÍCIO DO UPLOAD PARA O VERCEL BLOB --------------------------
