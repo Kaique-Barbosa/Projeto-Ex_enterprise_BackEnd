@@ -1,7 +1,7 @@
 const axios = require("axios"); // Importação do axios
 const handlebars = require("handlebars");
-const puppeteer = require('puppeteer-core');
-const chromium = require('@sparticuz/chromium');
+const puppeteer = require("puppeteer-core");
+const chromium = require("@sparticuz/chromium");
 const fs = require("fs"); // Para salvar localmente o PDF
 const path = require("path"); // Para garantir o caminho correto
 const { put } = require("@vercel/blob"); // SDK do Vercel Blob
@@ -40,7 +40,11 @@ const generatePdf = async (dadosLocador) => {
 
     // Inicializa o Puppeteer para criar o PDF
     // console.log("Iniciando o Puppeteer...");
-    const browser = await puppeteer.launch();
+    const browser = await puppeteer.launch({
+      executablePath: await chromium.executablePath(), // Caminho do Chromium
+      args: chromium.args, // Argumentos do Chromium
+      headless: chromium.headless, // Modo headless (sem interface)
+    });
     const page = await browser.newPage();  // Criação da página
     console.log("Página criada no Puppeteer.");
 
