@@ -78,11 +78,11 @@ const generatePdf = async (dadosLocador) => {
     // -------------------------- INÍCIO DO UPLOAD PARA O VERCEL BLOB --------------------------
 
     // Preparando o nome do arquivo no Vercel Blob
-    const fileName = `contratosGerados/contrato_${dadosLocador.nomeLocador}`;
+    const fileName = `contratosGerados/contrato_${dadosLocador.nomeLocador}.txt`;
     const texto = "texto de testes para verificar "
     // Envia o arquivo para o Vercel Blob usando o método 'put' do SDK
     const  url  = await put(fileName, texto, {
-      contentType: "application/pdf", 
+      contentType: "text/plain", 
       addRandomSuffix: false,
       token: tokenvalor,
       access: 'public',
