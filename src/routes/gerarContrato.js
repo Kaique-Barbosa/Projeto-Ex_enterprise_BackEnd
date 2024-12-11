@@ -1,6 +1,6 @@
 const express = require("express");
 const verificarRota = require("../middleware/VerificarRotaProtegida");
-const { generatePdf } = require("../middleware/gerarPdf"); // Middleware para gerar PDF
+const { generatePdf } = require("../middleware/gerarPdf"); 
 const rotaPdf = express.Router();
 
 // adicionar depois o verificarRota abaixo
