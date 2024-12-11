@@ -95,7 +95,7 @@ const generatePdf = async (dadosLocador) => {
     await browser.close();
     console.log("Puppeteer fechado.");
 
-    return pdfBuffer; // Retorna o buffer do PDF para posterior envio ou outro uso
+    return {pdfBuffer, url}; // Retorna o buffer do PDF para posterior envio ou outro uso
   } catch (error) {
     console.error("Erro ao gerar PDF:", error);
     throw error;

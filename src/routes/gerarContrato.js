@@ -14,12 +14,12 @@ rotaPdf.post("/gerar", async (req, res) => {
 
   try {
     // Gera o PDF e realiza o upload no Vercel Blob
-    const pdfBuffer = await generatePdf(dadosLocador);
+    const {url} = await generatePdf(dadosLocador);
 
     // Retorna a URL do arquivo salvo no Vercel Blob
     res.status(200).json({
       message: "PDF gerado com sucesso.",
-      url: `https://qsgsksirv7fkvuvt.public.blob.vercel-storage.com/contratosGerados/contrato_${dadosLocador.nomeLocador}`,
+      url: url,
     });
   } catch (error) {
     console.error("Erro ao gerar o PDF:", error.message);
