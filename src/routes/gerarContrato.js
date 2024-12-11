@@ -6,7 +6,7 @@ const rotaPdf = express.Router();
 // adicionar depois o verificarRota abaixo
 rotaPdf.post("/gerar", async (req, res) => {
   const dadosLocador = req.body;
-  const tokenvalor = process.env.BLOB_READ_WRITE_TOKEN
+
   // Validação simples dos dados (ajuste conforme necessário)
   if (!dadosLocador || !dadosLocador.nomeLocador) {
     return res.status(400).json({ error: "Dados inválidos, nome do locador é obrigatório." });
@@ -14,7 +14,7 @@ rotaPdf.post("/gerar", async (req, res) => {
 
   try {
     // Gera o PDF e realiza o upload no Vercel Blob
-    const pdfBuffer = await generatePdf(dadosLocador, tokenvalor);
+    const pdfBuffer = await generatePdf(dadosLocador);
 
     // Retorna a URL do arquivo salvo no Vercel Blob
     res.status(200).json({

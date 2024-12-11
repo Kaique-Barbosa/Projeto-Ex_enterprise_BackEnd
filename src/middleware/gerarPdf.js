@@ -9,37 +9,25 @@ const { put } = require("@vercel/blob"); // SDK do Vercel Blob
 // URL do Vercel Blob (Você pode ajustar essa URL conforme seu serviço no Vercel)
 const vercelBlobUploadUrl = "https://qsgsksirv7fkvuvt.public.blob.vercel-storage.com"; // Altere para a URL correta
 
-const generatePdf = async (dadosLocador, tokenvalor) => {
-//   const browser = await puppeteer.launch({
-//     executablePath: await chromium.executablePath(),
-//     args: chromium.args,
-//     headless: chromium.headless,
-//   });
-
+const generatePdf = async (dadosLocador) => {
   try {
-    // console.log("Iniciando geração de PDF...");
-
     // URL do template no Vercel Blob
     const templateUrl = "https://qsgsksirv7fkvuvt.public.blob.vercel-storage.com/modeloContrato/modeloContrato.hbs";
-    
+    const tokenvalor = "vercel_blob_rw_qsgSkSirv7fkVuvT_0HEnX41nm6ZQCenhQn16gOuTfxy2Nb"
 
     // Faz a requisição HTTP para buscar o template
     const response = await axios.get(templateUrl);
-    // console.log("Template carregado com sucesso.");
 
-    const templateContent = response.data; // Conteúdo do template
+    const templateContent = response.data;
     console.log("Conteúdo do template:", templateContent.slice(0, 100)); // Log do início do conteúdo (para evitar mostrar muito conteúdo)
 
     // Compila o template com Handlebars
     const parseTemplate = handlebars.compile(templateContent);
-    // console.log("Template compilado.");
-
+ 
     // Gera o HTML com as variáveis fornecidas
     const parsedHTML = parseTemplate(dadosLocador);
-    // console.log("HTML gerado a partir do template.");
 
     // Inicializa o Puppeteer para criar o PDF
-    // console.log("Iniciando o Puppeteer...");
     const browser = await puppeteer.launch({
       executablePath: await chromium.executablePath(), // Caminho do Chromium
       args: chromium.args, // Argumentos do Chromium
@@ -49,10 +37,7 @@ const generatePdf = async (dadosLocador, tokenvalor) => {
     console.log("Página criada no Puppeteer.");
 
     // Define o conteúdo HTML na página
-    // console.log("Setando conteúdo HTML na página...");
     await page.setContent(parsedHTML);
-    // console.log("Conteúdo HTML setado na página do Puppeteer.");
-
     await page.emulateMediaType("screen");
 
     // Gera o PDF em buffer
@@ -94,8 +79,6 @@ const generatePdf = async (dadosLocador, tokenvalor) => {
 
     // Preparando o nome do arquivo no Vercel Blob
     const fileName = `contratosGerados/contratoPreenchido_${dadosLocador.nomeLocador}.pdf`;
-
-    // console.log("Iniciando upload para o Vercel Blob...");
 
     // Envia o arquivo para o Vercel Blob usando o método 'put' do SDK
     const  url  = await put(fileName, pdfBuffer, {
