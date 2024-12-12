@@ -28,6 +28,11 @@ rotaPdf.post("/gerar", async (req, res) => {
 
   const dadosParaContrato = {
     ...dadosLocador,
+    nomeLocatario: "Linaldo Exaltação",
+    estadoCivilLocatario: "Solteiro",
+    profissaoLocatario: "CEO da Empresa Ex Enterprise",
+    cpfLocatario: "480.286.740-97",
+    rgLocatario: "35.248.146-80",
     logradouroImovel: enderecoImovel[0],
     numeroImovel: enderecoImovel[1],
     cidadeImovel: enderecoImovel[2],
