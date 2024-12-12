@@ -33,4 +33,4 @@ OBSERVAÇÔES ----------------------------
 
 Definir o Lib de banco que sera usada, Prisma ou Sequelize
 
-atualizar vercel ...
+atualizar vercel 
